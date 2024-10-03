@@ -1,0 +1,16 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "Eurohim"
+include ':app'
+include ':common'
+include ':domain'
+include ':designsystem'
+include ':di'
+include ':data'
+include ':feature-auth'
