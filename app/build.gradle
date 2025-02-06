@@ -70,9 +70,7 @@ dependencies {
 
     android {
         testOptions {
-            // Need android resources for tests
             unitTests.includeAndroidResources = true
-            // Disabling animations allows faster Espresso tests
             animationsDisabled = false
         }
     }

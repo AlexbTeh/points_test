@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -36,4 +37,13 @@ dependencies {
     implementation androidx_appcompat
     implementation kotlinx_coroutines_android
     implementation androidx_core_ktx
+    implementation ktor_clinet_websockets
+    implementation ktor_clinet_cio
+    implementation ktor_serialization
+    implementation ktor_client_logging
+    implementation ktor_client_core
+    implementation ktor_client_content_negotiation
+    implementation ktor_client_android
+    implementation ktor_client_auth
+    implementation kotlin_serialization
 }
