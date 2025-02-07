@@ -13,7 +13,9 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object MapperModule {
     @Provides
-    fun provideQuoteResponseMapper(): Mapper<@JvmSuppressWildcards QuoteResponse, @JvmSuppressWildcards Quote> {
+    fun provideQuoteResponseMapper(): Mapper<@JvmSuppressWildcards
+    List<QuoteResponse>,
+            @JvmSuppressWildcards List<Quote>> {
         return QuoteResponseMapper()
     }
 }

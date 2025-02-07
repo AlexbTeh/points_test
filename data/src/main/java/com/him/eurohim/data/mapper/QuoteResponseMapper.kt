@@ -4,14 +4,17 @@ import com.him.eurohim.data.model.QuoteResponse
 import com.him.eurohim.data.utils.Mapper
 import com.him.eurohim.domain.models.Quote
 
-class QuoteResponseMapper : Mapper<QuoteResponse, Quote> {
-    override fun map(from: QuoteResponse): Quote {
-       return Quote(
-            ticker = from.ticker,
-            exchange = from.exchange,
-            name = from.name,
-            lastTradePrice = from.lastTradePrice,
-            percentChange = from.percentChange
-        )
+class QuoteResponseMapper : Mapper<List<QuoteResponse>, List<Quote>> {
+    override fun map(from: List<QuoteResponse>): List<Quote> {
+        return from.map {
+            Quote(
+                ticker = it.ticker,
+                exchange = it.exchange,
+                name = it.name,
+                lastTradePrice = it.lastTradePrice,
+                percentChange = it.percentChange,
+                priceChange = it.priceChange
+            )
+        }
     }
 }

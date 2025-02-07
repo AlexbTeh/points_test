@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="real_time_quotes">📈 Котировки в реальном времени</string>
+    <string name="loading">Загрузка данных…</string>
+    <string name="error">Ошибка:</string>
+    <string name="try_again">🔄 Попробовать снова</string>
+    <string name="no_data">📉 Данных пока нет</string>
+    <string name="ticker">Тикер</string>
+    <string name="exchange">Биржа</string>
+    <string name="last_price">Цена:</string>
+    <string name="price_change">Изм.:</string>
+    <string name="no_exchange_data">Нет данных</string>
+</resources>

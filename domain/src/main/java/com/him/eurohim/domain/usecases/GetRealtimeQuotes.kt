@@ -5,5 +5,5 @@ import com.him.eurohim.domain.repository.QuotesRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetRealtimeQuotes(private val repository: QuotesRepository) {
-    operator fun invoke(): Flow<Quote> = repository.getQuotes()
+    operator fun invoke(): Flow<List<Quote>> = repository.getQuotes()
 }

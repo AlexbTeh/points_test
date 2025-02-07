@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="real_time_quotes">📈 Real-time Quotes</string>
+    <string name="loading">Loading data…</string>
+    <string name="error">Error:</string>
+    <string name="try_again">🔄 Try again</string>
+    <string name="no_data">📉 No data available</string>
+    <string name="ticker">Ticker</string>
+    <string name="exchange">Exchange</string>
+    <string name="last_price">Price:</string>
+    <string name="price_change">Change:</string>
+    <string name="no_exchange_data">No data</string>
+</resources>

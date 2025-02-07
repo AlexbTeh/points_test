@@ -51,9 +51,8 @@ dependencies {
     implementation project(":domain")
     implementation project(":common")
     implementation project(":data")
-    implementation project(':feature-auth')
+    implementation project(':quotes')
     implementation project(":designsystem")
-    implementation project(":di")
     implementation androidx_appcompat
     implementation 'com.google.android.material:material:1.11.0'
     implementation "androidx.compose.material3:material3:1.2.1"

@@ -4,5 +4,5 @@ import com.him.eurohim.domain.models.Quote
 import kotlinx.coroutines.flow.Flow
 
 interface QuotesRepository {
-    fun getQuotes(): Flow<Quote>
+    fun getQuotes(): Flow<List<Quote>>
 }

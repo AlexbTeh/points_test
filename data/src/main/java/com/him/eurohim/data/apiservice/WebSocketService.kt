@@ -1,12 +1,11 @@
 package com.him.eurohim.data.apiservice
 
 import com.him.eurohim.data.model.QuoteResponse
+import com.him.eurohim.data.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.header
 import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.readText
@@ -15,20 +14,28 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import javax.inject.Inject
 
-class WebSocketService(private val client: HttpClient) {
-    private val _quotes = MutableStateFlow<QuoteResponse?>(null)
-    val quotes = _quotes.asStateFlow()
+class WebSocketService @Inject constructor(
+    private val client: HttpClient,
+    private val json: Json
+) {
+    private val _quotes = MutableStateFlow<List<QuoteResponse>>(emptyList()) // ✅ StateFlow для UI
+    val quotes: StateFlow<List<QuoteResponse>> = _quotes.asStateFlow()
 
     private var session: WebSocketSession? = null
-    private val json = Json { ignoreUnknownKeys = true }
 
     init {
         connect()
@@ -40,14 +47,13 @@ class WebSocketService(private val client: HttpClient) {
                 try {
                     client.webSocket({
                         url("wss://wss.tradernet.com")
-                        header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        header("Content-Type", "application/json")
                     }) {
                         session = this
                         sendSubscriptionMessage()
                         handleIncomingMessages()
                     }
                 } catch (e: Exception) {
-                    println("WebSocket connection failed: ${e.localizedMessage}, retrying in 5 seconds...")
                     delay(5000)
                 }
             }
@@ -55,20 +61,49 @@ class WebSocketService(private val client: HttpClient) {
     }
 
     private suspend fun sendSubscriptionMessage() {
-        val message = json.encodeToString(listOf("realtimeQuotes", listOf("AAPL", "GOOGL")))
-        session?.send(Frame.Text(message))
+        if (session?.isActive == true) {
+            val message = json.encodeToString(
+                JsonArray(
+                    listOf(
+                        JsonPrimitive("realtimeQuotes"),
+                        JsonArray(Constants.FIXED_STOCK_LIST.map { JsonPrimitive(it) })
+                    )
+                )
+            )
+            session?.send(Frame.Text(message))
+        }
     }
 
     private suspend fun handleIncomingMessages() {
         session?.incoming?.consumeEach { frame ->
             if (frame is Frame.Text) {
-                val jsonElement = Json.parseToJsonElement(frame.readText()).jsonObject
-                jsonElement["q"]?.let {
-                    val data = json.decodeFromJsonElement<QuoteResponse>(it)
-                    _quotes.value = data
-                }
+                try {
+                    val message = frame.readText()
+                    val jsonElement = json.parseToJsonElement(message)
+
+                    if (jsonElement is JsonArray && jsonElement.size == 2) {
+                        val event = jsonElement[0].jsonPrimitive.content
+                        val dataElement = jsonElement[1]
+
+                        if (event == "q") {
+                            val newData: List<QuoteResponse> = when (dataElement) {
+                                is JsonObject -> listOf(json.decodeFromJsonElement(dataElement))
+                                is JsonArray -> json.decodeFromJsonElement(dataElement)
+                                else -> return@consumeEach
+                            }
+
+                            _quotes.update { oldList ->
+                                val updatedList = oldList.map { oldQuote ->
+                                    newData.find { it.ticker == oldQuote.ticker } ?: oldQuote
+                                } + newData.filter { new -> oldList.none { it.ticker == new.ticker } }
+
+                                updatedList.toList()
+                            }
+
+                        }
+                    }
+                } catch (_: Exception) { }
             }
         }
     }
 }
-
