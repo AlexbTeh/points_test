@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="real_time_quotes">📈 Котировки в реальном времени</string>
+    <string name="real_time_quotes_title">📈 Котировки в реальном времени</string>
     <string name="loading">Загрузка данных…</string>
     <string name="error">Ошибка:</string>
     <string name="try_again">🔄 Попробовать снова</string>
@@ -10,4 +10,6 @@
     <string name="last_price">Цена:</string>
     <string name="price_change">Изм.:</string>
     <string name="no_exchange_data">Нет данных</string>
+    <string name="real_time_quotes">🔄 Реальные котировки</string>
+    <string name="top_30_stocks">📊 Топ 30 акций</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.him.eurohim.data.module
 
 import android.util.Log
+import com.him.eurohim.data.apiservice.QuotesApiService
 import com.him.eurohim.data.apiservice.WebSocketService
 import dagger.Module
 import dagger.Provides
@@ -31,6 +32,12 @@ object NetworkModule {
         isLenient = true
         explicitNulls = false
         prettyPrint = false
+    }
+
+    @Provides
+    @Singleton
+    fun provideQuotesApiService(client: HttpClient): QuotesApiService {
+        return QuotesApiService(client)
     }
 
     @Provides

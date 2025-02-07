@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.him.eurohim.auth.components.QuoteItem
+import com.him.eurohim.auth.components.QuotesHeader
 
 @Composable
 internal fun QuotesScreenRoute(
@@ -38,21 +39,31 @@ fun QuotesScreen(viewModel: QuotesViewModel) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.real_time_quotes),
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+
+        QuotesHeader(
+            onSubscribeToQuotes = { viewModel.subscribeToQuotes() },
+            onLoadTopSecurities = { viewModel.loadTopSecurities() }
         )
 
         when {
             state.isLoading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                Text(stringResource(R.string.loading), modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Gray)
+                Text(
+                    stringResource(R.string.loading),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = Color.Gray
+                )
             }
-
             state.error != null -> {
-                Text("${stringResource(R.string.error)} ${state.error}", color = Color.Red, style = MaterialTheme.typography.bodyMedium)
-                Button(onClick = { viewModel.subscribeToQuotes() }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(
+                    "${stringResource(R.string.error)} ${state.error}",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Button(
+                    onClick = { viewModel.subscribeToQuotes() },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
                     Text(stringResource(R.string.try_again))
                 }
             }
@@ -65,7 +76,11 @@ fun QuotesScreen(viewModel: QuotesViewModel) {
                 }
             }
             else -> {
-                Text(stringResource(R.string.no_data), modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Gray)
+                Text(
+                    stringResource(R.string.no_data),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = Color.Gray
+                )
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.him.eurohim.data.repository
 
+import com.him.eurohim.data.apiservice.QuotesApiService
 import com.him.eurohim.data.apiservice.WebSocketService
 import com.him.eurohim.data.model.QuoteResponse
 import com.him.eurohim.data.utils.Mapper
@@ -12,11 +13,17 @@ import javax.inject.Inject
 
 class QuotesRepositoryImpl @Inject constructor(
     private val webSocketService: WebSocketService,
+    private val apiService: QuotesApiService,
     private val mapper: Mapper<List<QuoteResponse>, List<Quote>>
 ) : QuotesRepository {
 
     override fun getQuotes(): Flow<List<Quote>> = webSocketService.quotes
         .map(mapper::map)
         .distinctUntilChanged()
+
+    override suspend fun getTopSecurities(): List<Quote> {
+        val response = apiService.getTopSecurities()
+        return mapper.map(response)
+    }
 }
 
