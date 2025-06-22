@@ -1,8 +1,6 @@
 package com.him.eurohim.data.module
 
 import android.util.Log
-import com.him.eurohim.data.apiservice.QuotesApiService
-import com.him.eurohim.data.apiservice.WebSocketService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,8 +12,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -34,31 +30,11 @@ object NetworkModule {
         prettyPrint = false
     }
 
-    @Provides
-    @Singleton
-    fun provideQuotesApiService(client: HttpClient): QuotesApiService {
-        return QuotesApiService(client)
-    }
-
-    @Provides
-    @Singleton
-    fun provideWebSocketService(client: HttpClient, json: Json): WebSocketService {
-        return WebSocketService(client, json)
-    }
-
     @OptIn(ExperimentalSerializationApi::class)
     @Singleton
     @Provides
-    fun provideWebSocketHttpClient(): HttpClient {
+    fun provideHttpClient(): HttpClient {
         return HttpClient(CIO) {
-            install(WebSockets) {
-                contentConverter = KotlinxWebsocketSerializationConverter(Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                    explicitNulls = false
-                })
-            }
-
             install(HttpRequestRetry) {
                 retryIf { request, response ->
                     response.status.value in 500..599
@@ -85,6 +61,9 @@ object NetworkModule {
                         Log.i("HttpClient", message)
                     }
                 }
+            }
+            engine {
+                requestTimeout = 15_000
             }
         }
     }

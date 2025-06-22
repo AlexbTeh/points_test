@@ -5,21 +5,23 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.him.eurohim.auth.quotesScreen
-import com.him.eurohim.auth.quotesScreenRoute
+import com.him.eurohim.auth.alertsDetailsScreen
+import com.him.eurohim.auth.alertsScreen
+import com.him.eurohim.auth.alertsScreenRoute
 
 
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = quotesScreenRoute
+    startDestination: String = alertsScreenRoute
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
-        quotesScreen()
+        alertsScreen(navController)
+        alertsDetailsScreen(navController)
     }
 }
